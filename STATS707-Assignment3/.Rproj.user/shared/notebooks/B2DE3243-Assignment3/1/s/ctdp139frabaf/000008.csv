@@ -1,0 +1,3 @@
+"0","carseatsModel <- lm(Sales~Price, data = carseats)"
+"0","carseatsCoeff <- carseatsModel$coefficients"
+"0","abline(carseatsCoeff[1], carseatsCoeff[2], col=""Red"")"

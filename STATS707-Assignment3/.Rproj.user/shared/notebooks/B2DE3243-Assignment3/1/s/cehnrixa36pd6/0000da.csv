@@ -1,0 +1,3 @@
+"0","juiceDrinksMd <- lm(juiceDrinks$TotalSugar~juiceDrinks$Energy, data = juiceDrinks)"
+"0","juiceDrinksCoeff <- juiceDrinksMd$coefficients"
+"0","abline(juiceDrinksCoeff[1], juiceDrinksCoeff[2], col=""Red"")"

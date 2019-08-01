@@ -1,0 +1,2 @@
+"0","tripAbove19km <- docklessCols[which(docklessCols$Trip.Distance > 19000), c('Origin.Cell.ID', 'Destination.Cell.ID') ]"
+"0","tripAbove19km"

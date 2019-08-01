@@ -1,0 +1,2 @@
+"0","turbine <- read.csv(""turbine-simple.csv"")"
+"0","plot(HeatRate~Airflow, data=turbine)"

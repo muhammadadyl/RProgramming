@@ -1,0 +1,5 @@
+"0","#pdf(file=""Q2aAnswer.pdf"")"
+"0","x <- seq(-4, 4, length = 1000)"
+"0","xplot <- x[x < -0.862]"
+"0","yplot <- dnorm(xplot, mean = 0, sd = 1)"
+"0","plot(xplot, yplot, type = ""l"", col = ""green4"", lwd = 3, axes = FALSE, frame.plot = FALSE, ann = FALSE, ylim = c(-.1, .5), xlim = c(-4, 4))"

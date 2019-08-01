@@ -1,0 +1,220 @@
+---
+title: "Assignment3"
+author: "Syed Muhammad Adeel Ibrahim"
+date: "May 12, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+##Question 1
+
+You may have been told that juice drinks are "nothing but sugar." Read in the dataset "cordial-simple.csv", which has the nutrition information for several different cordial brands and flavours. Consider predicting Energy in kJ with grams of Total Sugar. 
+  1. Suppose these drinks are indeed "nothing but sugar", and sugar contains 16.7 kJ per gram. Formulate an appropriate null hypothesis for β0 and β1 that reflects this status quo. Make a scatter plot of the data; add both the line of best fit and your hypothesized line.
+```{r}
+
+juiceDrinks <- read.csv("cordial-simple.csv")
+plot(x = juiceDrinks$Energy, y = juiceDrinks$TotalSugar, xlab = "Energy", ylab = "Total Sugar")
+
+juiceDrinksMd <- lm(juiceDrinks$TotalSugar~juiceDrinks$Energy, data = juiceDrinks)
+juiceDrinksCoeff <- juiceDrinksMd$coefficients
+abline(juiceDrinksCoeff[1], juiceDrinksCoeff[2], col="Red")
+
+# Ho : beta0 = 0  
+# Ha : beta0 != 0
+
+# Ho : beta1 = 16.7 
+# Ha : beta1 != 16.7
+
+hypotesisData <- data.frame(TotalSugar = c(0, 1), Energy = c(0, 16.7))
+abline(lm(TotalSugar~Energy, data = hypotesisData))
+
+
+
+# Juice Drinks are same as sugar 
+
+```
+
+  2. Fit a linear model and report the output of the "summary" function. 
+  
+```{r}
+
+modJuice <- lm(Energy~TotalSugar, data=juiceDrinks)
+
+(modJuiceSummary <- summary(modJuice))
+
+```
+  
+  
+  3. Use the output to test the hypotheses in (1) against two sided alternatives. State your conclusions. 
+  
+```{r}
+#Ho:beta1=1 vs Ha:Beta0 != 0
+
+coeffJuice <- modJuiceSummary$coefficients
+
+b1 <- coeffJuice[2, 1]
+seb1 <- coeffJuice[2, 2]
+
+test <- (b1 - 1) / seb1
+
+df <- nrow(juiceDrinks) - 2
+
+# 100 - 95 / 2 = 1.25
+(qtpoint <- qt(.975, df))
+
+(ptJuice <- 2 * pt(test, df))
+
+if(round(ptJuice, 3) == 0) {
+  paste("We can reject our null hypothesis since its not equal to zero")
+}
+
+
+```
+  
+  
+  4. Comment on how close the relationship is between Total Sugar and energy, citing portions of your output in (2). 
+  A.  R square is approximately 1. There is close relationship.  Deterministic relationship is seen between total sugar and energy. 0 to 20 total sugar,  we see that the points lie on the line.
+  
+  5. Produce and include diagnostic plots. What assumptions are they checking? Briefly comment on your conclusions.
+  
+```{r}
+par(mfrow=c(2,2))
+plot(modJuice)
+```
+  A. 
+    1.Residual vs Fitted - not too bad  with just low variation. 
+    2.Normal Q-Q -  plot here helps to check whether sugar variable is normally distributed. Our graph is not very straight. Normality is clearly violation. 
+    3.Scale location - It is not equally spread. Influential point lies in the trend. 
+    4.The residuals and leverage - points are clustered in the left side excluding some points. This tells us that the slope coefficient changes.
+  
+  6. Are there any drinks where the kJ and Total Sugar amounts given are inconsistent, allowing that there may be other sources of kJ?
+  A. From scatter plot, It is known that there is inconsistency in few points to 16.7 KJ.
+
+##Question 2
+Your friend conjectures that citrus/blackcurrant flavored juice drinks have more added sugar because of the natural tartness of these flavors. 
+  1. Perform a t-test comparing the added sugar for citrus/blackcurrant drinks vs other flavors. State your null and alternative hypotheses, pvalue, and final conclusion. State which test (equal or unequal variance) you used and why.
+```{r}
+
+citrus <- juiceDrinks[juiceDrinks$Flavour=="Citrus-Blackcurrant",]
+others <- juiceDrinks[juiceDrinks$Flavour=="Other",]
+currantSugar = citrus$TotalSugar
+otherSugar = others$TotalSugar
+t.test(currantSugar, otherSugar, alternative="greater")
+var.test(currantSugar,otherSugar)
+
+```
+  
+  2. Produce a visualization suitable for comparing the added sugar in the two groups of drinks.
+```{r}
+boxplot(TotalSugar~Flavour, data=juiceDrinks, main="Total Sugar data", xlab="Flavour", ylab="Total Sugar")
+```
+  
+  3. Are there serious deviations from the assumptions of the t-test? Explain.
+  A. There is no serious deviation. As sample size is greater than 30.
+  
+  4. Comment on whether the mean is a good way to characterize the typical amount of added sugar for these two flavour groups.
+  A. As we have a skewed data. Mean is not a great measure.
+
+##Question 3
+Consider the data in the file "carseats-simple.csv." The response is the number of carseats of a particular brand sold (in thousands) at different locations over the course of a year. The predictor is the price in dollars of the carseat at that location. The data has been collected by a consumer agency that has no role in setting the price. 
+  1. Produce a scatterplot of the data, including the line of best fit.
+
+```{r}
+
+carseats <- read.csv("carseats-simple.csv")
+
+plot(x = carseats$Price, y = carseats$Sales, xlab = "Price", ylab = "Sales")
+
+carseatsModel <- lm(Sales~Price, data = carseats)
+carseatsCoeff <- carseatsModel$coefficients
+
+abline(carseatsCoeff[1], carseatsCoeff[2], col="Red")
+
+
+```
+
+  2. Test for a relationship between the sales and the price. Give your conclusion, referring to relevant portions of your output.
+
+```{r}
+
+(carseatsSummary <- summary(carseatsModel))
+
+```
+  A. Based on R square, it is very small. Correlation coefficient is negative. The relationship between sales and the price is moderate negative correlated.
+
+  3. What is our uncertainty about the average number of sales for locations where the price is $150? Give a confidence interval for this quantity.
+```{r}
+
+predict(carseatsModel, data.frame(Price = 150), interval = "confidence")
+
+```
+  
+  4. Suppose we observe a location has set the price at $150. Give a prediction interval for the sales at that location. Explain why it is larger than the interval in (4).
+  
+```{r}
+
+predict(carseatsModel, data.frame(Price = 150), interval="prediction")
+
+```
+  A. The standard error on the prediction is larger therefore the prediction interval will be wider than the confidence interval.
+  
+  5. Suppose we change the price at a location previously charging $200 to $150. Should we use the interval above to predict sales at the new price? Explain any reservations you have.
+  A. Observational value is not same as experimental data. In observational value we cannot know the causality. May be there are not many people and the price is set for $200 to cover the cost.  Different levels may be set for different places. If we change the price we get other, this we get from experimental set up.
+  
+##Question 4
+Consider the data in the file "turbine-simple.csv." A gas turbine is an internal combustion engine used to generate electricity. A key measure of how well the turbine works is the heat rate, the energy input divided by the electricity generated (with lower heat rate being better). We are interested in how it is related to the airflow through the turbine. 
+  1. Produce a scatterplot of the data. Describe the relationship between airflow and heat rate.
+
+```{r}
+
+turbine <- read.csv("turbine-simple.csv")
+plot(HeatRate~Airflow, data=turbine)
+turbineModel <- lm(HeatRate~Airflow, data=turbine)
+summary(turbineModel)
+
+```
+
+  2. Try a few different transformations of airflow, with the aim of making the relationship more linear. Show plots of the different transformations you have tried (at least three) and indicate which you like the best. 
+```{r}
+turbineModel1 <- lm(HeatRate~log(Airflow), data=turbine)
+plot(HeatRate~log(Airflow), data=turbine)
+abline(turbineModel1)
+summary(turbineModel1)
+
+turbineModel2 <- lm(HeatRate~sqrt(Airflow), data=turbine)
+plot(HeatRate~sqrt(Airflow), data=turbine)
+abline(turbineModel2)
+summary(turbineModel2)
+
+turbineModel3 <- lm(HeatRate~sin(Airflow), data=turbine)
+plot(HeatRate~sin(Airflow), data=turbine)
+abline(turbineModel3)
+summary(turbineModel3)
+
+```
+  
+  
+  
+  3. Fit a linear model using the transformation you determined in (2). Show the prediction from this model as a curve on your scatterplot from (1). Create a prediction interval for the heat rate when the airflow is 300. Add this interval to your scatterplot as well.
+
+```{r}
+
+
+par(c(1,2));
+predict(turbineModel1, data.frame(Airflow = 300), interval="prediction")
+
+
+predictValue <- predict(turbineModel1, data.frame(Airflow = seq(0, 800, .01)), interval="prediction")
+
+
+plot(HeatRate~Airflow, data=turbine, ylim=c(7000, 20000))
+lines(seq(0, 800, .01), predictValue[,1], col="blue")
+lines(seq(0, 800, .01), predictValue[,2], col="red")
+lines(seq(0, 800, .01), predictValue[,3], col="red")
+
+```
+
+  
+  
+  

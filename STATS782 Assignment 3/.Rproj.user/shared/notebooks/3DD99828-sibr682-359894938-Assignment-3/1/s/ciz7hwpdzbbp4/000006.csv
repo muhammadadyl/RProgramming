@@ -1,0 +1,4 @@
+"0","theta0 <- seq(0, 2 * pi, length = 150)"
+"0","x <- 2 * cos(theta0) "
+"0","y <- 2 * sin(theta0)"
+"0","polygon(x, y, col = ""darkseagreen"" , border = ""black"", lwd = 2)"

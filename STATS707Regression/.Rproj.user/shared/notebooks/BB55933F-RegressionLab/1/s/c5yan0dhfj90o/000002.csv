@@ -1,0 +1,2 @@
+"0","modsqrt <- lm (sqrt(Secondary)~I(Primary^0.5), data=isotopes)"
+"0","plot(modsqrt)"

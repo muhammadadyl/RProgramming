@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1554787806134.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1720063301",
+    "id" : "B35A856D",
+    "lastKnownWriteTime" : 1554795849,
+    "last_content_update" : 1554795849489,
+    "path" : "~/STATS782-Assignment02/Assignment02.Rmd",
+    "project_path" : "Assignment02.Rmd",
+    "properties" : {
+        "cursorPosition" : "271,49",
+        "last_setup_crc32" : "E189393Abb338d19",
+        "scrollLine" : "262",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

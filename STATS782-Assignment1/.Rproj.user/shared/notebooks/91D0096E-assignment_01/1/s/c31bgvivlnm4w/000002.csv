@@ -1,0 +1,4 @@
+"0","docklessCols['Trip.Speed'] <- docklessCols$Trip.Distance / docklessCols$Trip.Duration"
+"0","tripOrderByFastestSpeed <- docklessCols[order(docklessCols$Trip.Speed, decreasing = TRUE), c('Trip.Distance', 'Trip.Speed')]"
+"0","top10FastestSpeed <- tripOrderByFastestSpeed[1:10,]"
+"0","top10FastestSpeed"

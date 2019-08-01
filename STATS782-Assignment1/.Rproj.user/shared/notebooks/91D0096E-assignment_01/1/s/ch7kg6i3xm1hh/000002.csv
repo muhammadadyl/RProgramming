@@ -1,0 +1,8 @@
+"0","tripBtw0to8 <- docklessCols[which(docklessCols$Hour >= 0 & docklessCols$Hour <= 8),]"
+"0","tripBtw0to8LongestDistance <- sort(tripBtw0to8$Trip.Distance, decreasing = TRUE) "
+"0","topDistanceTripBtw0to8 <- tripBtw0to8LongestDistance[1]"
+"0","topDistanceTripBtw0to8"
+"1","[1]"
+"1"," 11977"
+"1","
+"

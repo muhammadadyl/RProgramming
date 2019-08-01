@@ -1,0 +1,2 @@
+"0","carseats <- read.csv(""carseats-simple.csv"")"
+"0","plot(x = carseats$Price, y = carseats$Sales, xlab = ""Price"", ylab = ""Sales"")"

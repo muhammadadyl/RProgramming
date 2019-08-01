@@ -1,0 +1,218 @@
+---
+title: "STATS707Assignment4"
+author: "Syed Muhammad Adeel Ibrahim"
+date: "June 5, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+###Read in the data from soccer.txt (hint, use the following command:)
+ read.table("soccer.txt", header=TRUE) -> soccer 
+####a) Our goal is to consider models that predict the average goals per game in the World Cup from the average goals per game in the largest European leagues in the preceding year. You are first asked to consider a model using the EPL and the Bundesliga. What is the p-value associated with the F-statistic? How do you interpret this?
+
+```{r}
+
+soccer <- read.table("soccer.txt", header=TRUE)
+
+eplNBundesliga.lm <- lm(formula = WorldCup ~ EPL + Bundesliga, data = soccer)
+summary(eplNBundesliga.lm)
+
+##P-value is just above .05194 which could be consider reasonable small here which means our data doesn't suppot our null hypothesis, it is enough evident to reject it.
+
+```
+
+####b) Make the residuals vs leverage plot for this model. You will see one point with Cooks distance larger than 0.5. What does this mean? What are the EPL, Bundesliga and World cup goals for this point? What effect is this point having on the model?
+
+```{r}
+
+plot(eplNBundesliga.lm, which = 5)
+
+#Residual vs Leverage shows the impact of each point on the model, in the given figure 3 is the point that heavily influencing the current model, by theory every point should be less .5 cook's distance to qualify an ordinary participation. over here point 3 is heavily participating which means if we remove this point it will also change the model.
+
+```
+
+####c) Find a point estimate, confidence and predition interval for average World Cup goals if the EPL and Bundesliga both average 4 goals per game. Is it sensible to use this model for this sort of prediction? Explain.
+
+```{r}
+
+newdata = data.frame(EPL=4, Bundesliga=4)
+
+predict(eplNBundesliga.lm, newdata)
+
+predict(eplNBundesliga.lm, newdata, interval = "confidence")
+
+predict(eplNBundesliga.lm, newdata, interval = "prediction")
+
+#its not a good idea to predict result through such models, since we are unable to identify importance and irrelevance of multiple variables, therefore it is wise to use recommend method to identity relevance of variables for prediction
+```
+
+####d) It would also be possible to also include the La Liga and Serie A competitions in the model (please ignore the incomplete total and Champions league variables. Using stepwise selection and your chosen information criteria, try to come up with a better model. Report your findings, including diagnostics and any concerns.
+
+```{r}
+
+allLeague.lm <- lm(formula = WorldCup ~ EPL + Bundesliga + LaLiga + SerieA, data = soccer) 
+
+# backward Model
+allLeague.modBackward <- step(allLeague.lm)
+
+allLeague.startmod <- lm(WorldCup ~ 1, data = soccer) 
+
+# Forward Model
+allLeague.modForward <- step(allLeague.startmod, scope= list(upper = WorldCup ~ EPL + Bundesliga + LaLiga + SerieA, lower= WorldCup ~ 1), direction="forward")
+
+# Both Model
+allLeague.modBoth <- step(allLeague.startmod, scope= list(upper = WorldCup ~ EPL + Bundesliga + LaLiga + SerieA, lower= WorldCup ~ 1), direction="both")
+
+# While looking into all the stepwise types it seems like predictive models are same with AIC of -45.71 
+```
+
+####e) Someone suggests that the start up of the Champions League format in 1992 affected the goals scored in the individual countries leagues, and therefore the relationship with the world cup. Consider predicting the world cup goals with a single league-sketch data that would indicate a main effect of the champions league, but no interaction. Make another sketch of data that would indicate a significant interaction. (Do not worry about making your sketch agree with the observed data for a particular league.) You may either make an electronic drawing, or take a picture of each sketch to embed in your assignment.
+
+```{r}
+championsnoNointeract.lm <- lm(WorldCup~EPL+Champions, data=soccer)
+summary(championsnoNointeract.lm)
+
+championsInteract.lm <- lm(WorldCup~EPL*Champions, data=soccer)
+summary(championsInteract.lm)
+
+
+# it is visible that AIC now dropped to 21.02 for entries with champions Leage
+```
+
+## Question 2
+
+### The following table gives the number of full time and part time academic employees of different ranks at the University of Michigan.
+###                    | Full Time | Part Time
+###--------------------------------------------
+###Assistant Professor | 716       | 83
+###Associate Professor | 727       | 86
+###Full Professor      | 1226      | 330
+
+####a) Is Full Time/Part Time status independent of rank? Give your computer output and state your conclusion.
+
+```{r}
+
+entries <- c(716 , 83, 727, 86, 1226, 330)
+
+x <- matrix(entries, ncol=2, byrow=TRUE) 
+chisq.test(x)
+
+# since pvalue < 0.0001 therefore Rank and fulltime/parttime roles are not independent
+```
+
+####b) Show how the degrees of freedom for the test is computed.
+
+```{r}
+
+#df = (Colunm - 1) X (Row - 1)
+(2 - 1) * (3 - 1)
+
+```
+
+####c) Show how the expected value for full time Associate Professors is computed.
+
+```{r}
+total <- sum(entries)
+PFullTime <- (716 + 727 + 1226)/total
+PAssosiate <- (727 + 86)/total
+
+PFullTimeAssosiate <- PFullTime * PAssosiate
+
+PFullTimeAssosiate * total
+
+```
+
+####d) A newspaper article suggests Assistant Professors are more likely that other ranks to be part time because of parenting duties. Is this a correct interpretation of this data? Explain.
+
+```{r}
+
+x - chisq.test(x)$expected
+
+# Thats not true, In fact Full Professors are the ones that more likely be part timer.
+
+```
+
+## Question 3
+
+### A university has as its goal to have 82% domestic students with full government funding, 14.5% international students, and 3.5% other students. A sample of 1000 students shows 807 fully funded domestic students, 167 international students, and 26 other students.
+
+####a) Are the universitys students distributed in the desired way? Perform the relevant hypothesis test and give your conclusion.
+```{r}
+
+x <- c(807, 167, 26)
+(test <- chisq.test(x, p = c(.82, .145, .035)))
+test$expected
+
+# Based on p-value 0.05344 which is greater than .0001 we cannot reject null Hypothesis
+```
+####b) Someone suggests using a sample of 100 students rather than 1000 students, so each can be interviewed personally and asked a more extensive set of questions. Discuss the pros and cons of this idea with respect to the test performed above.
+
+```{r}
+
+# sampling 100 students out of another sample makes no sense and it would result abnormalities in distribution. Theoritically it will have a similar result as above. but practically it could cause serious distribution change since we are taking 1/10th of the sample and could change p-value drastically.
+
+```
+
+## Question 4
+
+### Consider the data on kg of tomatoes produced by plots with differing soil salinity in the file “salinity.txt.”
+
+####a) Treating salinity as a factor, perform a one way anova. What is your conclusion? Explan what parts of the output you are basing this conclusion on.
+
+```{r}
+
+salinity <- read.table("salinity.txt", header=TRUE)
+
+sal.anov <- aov(yield~factor(salinity), salinity)
+
+summary(sal.anov)
+
+
+# according to P value it could be seen that there is significant difference between groups. since the value is much lesser than .001
+
+```
+
+####b) Produce relevant diagnostic plots and outline any concerns.
+
+```{r}
+
+boxplot(yield ~ factor(salinity), data = salinity,
+        xlab = "Salinity", ylab = "Yield",
+        frame = FALSE, col = c("#00AFBB", "#E7B800", "#FC4E07"))
+
+par(mfrow=c(2,2))
+plot(sal.anov, which=c(1,2,5))
+hist(sal.anov$residuals)
+
+# while looking at the residual histogram it seems that distribution is not fully uniform, but Normal Q-Q shows that it is dributed well with few outliners, further based on only one factor Residual vs Factor graph is not formed with meaningful data
+
+```
+
+####c) Compute intervals for pairwise comparisons based on Tukeys honest significant differences. Describe the optimal salinity level(s).
+
+```{r}
+
+TukeyHSD(sal.anov)
+
+# from the answer it can be observed that 6-1.6, 10.2-1.6, 10.2-3.8 are the significants.
+# most optimal salinity level is 10.2-1.6
+
+```
+
+####d) Describe the advantages and disadvantages of using an ANOVA rather than regression in this situation.
+
+```{r}
+
+# Main advantage of using Anova over Regression is that it could use single dependent variable to analyze. but when you want more granuality in your result Regression would be a better choice, over here we had only on dependent variable that used for analysing the outcome of grouped data. While regression couldn't do well in group data. However in above example regression would do better since the factor/group are numeric data.
+
+```
+
+
+
+

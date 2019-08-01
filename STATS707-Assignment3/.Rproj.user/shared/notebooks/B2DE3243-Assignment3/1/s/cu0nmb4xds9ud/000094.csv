@@ -1,0 +1,2 @@
+"0","turbineModel1 <- lm(HeatRate~log(Airflow), data=turbine)"
+"0","plot(HeatRate~log(Airflow), data=turbine)"

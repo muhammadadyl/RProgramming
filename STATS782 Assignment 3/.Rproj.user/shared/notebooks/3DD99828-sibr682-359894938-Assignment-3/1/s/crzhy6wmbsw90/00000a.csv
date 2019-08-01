@@ -1,0 +1,3 @@
+"0","# Partitioning line"
+"0","meanOmega <- dnorm(-0.862, mean = 0, sd = 1)"
+"0","lines(x = c(-.862, -.862), y =c(-.02, meanOmega), col = ""purple"", lty=""6666"", lwd = 3)"

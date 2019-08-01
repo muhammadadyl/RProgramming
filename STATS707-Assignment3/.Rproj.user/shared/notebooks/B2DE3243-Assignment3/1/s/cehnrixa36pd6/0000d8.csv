@@ -1,0 +1,2 @@
+"0","juiceDrinks <- read.csv(""cordial-simple.csv"")"
+"0","plot(x = juiceDrinks$Energy, y = juiceDrinks$TotalSugar, xlab = ""Energy"", ylab = ""Total Sugar"")"

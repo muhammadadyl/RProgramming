@@ -1,0 +1,297 @@
+---
+title: "Assignment2"
+author: "Syed Muhammad Adeel Ibrahim"
+date: "April 2, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Including Q1
+
+1. {28.88,7.31,2.47,1.74,20.62,17.38,8.52,6.72,29.35,42.86} is a sample from a normal population with mean µ and standard deviation σ. It is already known that the standard deviation is either 15, 20 or 25. By the maximum likelihood (ML) method estimate µ and σ.
+
+```{r}
+x = c(28.88, 7.31, 2.47, 1.74, 20.62, 17.38, 8.52, 6.72, 29.35, 42.86)
+mu <- seq(0, 60, .01)
+sigma <- seq(15, 25, .01)
+
+ll2 <- function(theta1, theta2) { 
+   
+  if(length(theta1) < length(theta2)) {
+     theta1 <- rep(theta1, len=length(theta2))
+  }
+  
+  if(length(theta2) < length(theta1)) {
+      theta2 <- rep(theta2, len=length(theta1)) 
+  }
+   
+  ans <- numeric(length(theta1)) 
+  
+  for(i in 1:length(ans)) {
+   density <- dnorm(x, theta1[i], theta2[i], log=TRUE)
+   ans[i] <- sum(density) 
+  } 
+  
+  ans 
+}
+
+
+z <- outer(mu, sigma, ll2)
+i <- which(z == max(z), TRUE)
+
+theta <- c(mu[i[1]], sigma[i[2]])
+
+ll <- function(theta) { 
+  sum(dnorm(x, theta[1], theta[2], log = TRUE))
+}
+
+z <- suppressWarnings(optim(theta, ll, control = list(fnscale=-1), method="BFGS", hessian = TRUE))
+
+muSigmaMLE <- z$par
+muSigmaMLE
+
+```
+
+## Including Q2
+
+2. A small lawnmower company produced 1500 lawnmowers in 1998. In an eﬀort to determine how maintenance-free these units were, the company decided to conduct a multi-year study of the 1998 lawnmowers. A sample of 200 owners of these lawnmowers was drawn randomly from company records and contacted. The owners were given an 800 number and asked to call the company when the ﬁrst major repair was required for the lawnmowers. Owners who no longer used the lawnmower to cut their grass were disqualiﬁed. After many years, 187 of the owners had reported. The other 13 disqualiﬁed themselves. The average number of years until the ﬁrst major repair was 5.3 for the 187 owners reporting. It is believed that the population standard deviation was 1.28 years. If the company wants to advertise and average number of years of repair-free lawn mowing for this lawnmower, what is the point estimate? Construct a 89% conﬁdence interval for the average number of years until the ﬁrst major repair. 
+
+```{r pressure, echo=FALSE}
+
+n = 187
+xbar = 5.3
+sigma = 1.28
+
+q = qnorm(1-.11/2, 0, 1)
+
+(lvalue = xbar - (q * sigma/sqrt(n)))
+(uvalue = xbar + (q * sigma/sqrt(n)))
+
+```
+
+## Including Q3
+
+3. To compare two programs for training industrial workers to perform a skilled job, 20 workers are included in an experiment. Of these 10 are selected at random to be trained by method 1; the remaining 10 workers are to be trained by method 2. After completion of training, all the workers are subjected to a time-and-motion test that records the speed of performance of a skilled job. The following data are obtained: 
+
+Time (in minutes) 
+Method 1 | 15 20 11 23 16 21 18 16 27 24 
+Method 2 | 23 31 13 19 23 17 28 26 25 28
+
+```{r}
+method1 = c (15, 20, 11, 23, 16, 21, 18, 16, 27, 24)
+method2 = c (23, 31, 13, 19, 23, 17, 28, 26, 25, 28)
+
+```
+(a) Can you conclude from the data that the main job time is signiﬁcantly less after training with method 1 than after training with method 2? (Test with α = 0.05)
+
+```{r}
+
+# H0 : mu1 = mu2
+# HA : mu1 < mu2
+
+xbar = mean(method1)
+ybar = mean(method2)
+
+S1 = sd(method1)
+S2 = sd(method2)
+n1 = length(method1)
+n2 = length(method2)
+
+Spooled = sqrt(((n1-1) * (S1^2) + (n2-1) * (S2^2)) / (n1 + n2 - 2))
+
+t = (xbar - ybar) / (Spooled * sqrt((1/n1) + (1/n2)))
+
+c1 = qt(1-.05, n1 + n2 - 2)
+
+if (t < -c1) {
+  message("T is in rejection region, so we reject hypothesis.")
+} else {
+  message("T is not in rejection region, so we don't reject hypothesis.") 
+}
+
+
+```
+
+
+(b) State the assumptions you make for the population distributions.
+
+ i) Both distributions are normal
+ ii) The population variances are equal
+
+(c) Construct a 95% conﬁdence interval for the population mean diﬀerent in job times between the two methods.
+
+```{r}
+
+c = qt(1-.05/2, n1 + n2 - 2)
+(U = (xbar - ybar) + c * (Spooled * sqrt((1/n1) + (1/n2))))
+(L = (xbar - ybar) - c * (Spooled * sqrt((1/n1) + (1/n2))))
+
+```
+
+
+## Including Q4
+
+4. To determine how an experimental dose of a dental anesthesia aﬀects male and female patients, random samples of 15 male and 16 female patients are selected and their reaction times are recorded in minutes. The mean and the standard deviations obtained from the data sets are: 
+| Male | Female 
+Mean | 4.8 | 4.4 
+sd | 0.8 | 0.9 
+
+(a) Devise a test with α = 0.1 to determine whether there is a signiﬁcant diﬀerence in the mean reaction times between the males and females. 
+```{r}
+n1 = 15
+Xbar = 4.8
+s1 = .8
+
+n2 = 16
+Ybar = 4.4
+s2 = .9
+
+# H0 : mu1 = mu2
+# HA : mu1 != mu2
+
+(c1 = qnorm(1 - .01/2, 0, 1))
+
+(c2 = qnorm(.01/2, 0, 1))
+
+(z = (Xbar - Ybar) / sqrt((s1^2/n1) + (s2^2/n2)))
+
+if (z > c2 && z < c1) {
+  message("Z is not in rejection region, therefore null hypothesis stays.")
+} else {
+  message("Z is in rejection region, therefore null hypothesis is rejected.")
+}
+
+
+```
+
+(b) Construct a 95% conﬁdence interval for the diﬀerence between the mean reaction times of males and females. 
+
+```{r}
+
+c = qnorm(1 -.05/2, 0, 1)
+
+(Lval = (Xbar - Ybar) - c * sqrt((s1^2/n1) + (s2^2/n2)))
+
+(Uval = (Xbar - Ybar) + c * sqrt((s1^2/n1) + (s2^2/n2)))
+
+```
+
+
+(c) Construct a 99% conﬁdence interval for the mean reaction time of each group individually.
+
+```{r}
+
+## do check with individually n small
+c = qnorm(1 -.01/2, 0, 1)
+
+(Lval = (Xbar - Ybar) - c * sqrt((s1^2/n1) + (s2^2/n2)))
+
+(Uval = (Xbar - Ybar) + c * sqrt((s1^2/n1) + (s2^2/n2)))
+
+```
+
+## Including Q5
+
+5. A sociologist wishes to compare the fertility rates of women in two tribal sects A and B of eastern Africa. From each sect a random sample of 100 women in the age group 50-60 years is selected, and the number of children born to each is recorded. The following frequency distributions are obtained: 
+
+Number of children | 0   1   2   3   4   5   6  7  8 | Total 
+                 A | 6  14  18  25  19  11   5  2  3 | 100 
+                 B | 0   3   8  18  30  19  15  5  2 | 100 
+
+(a) Calculate the mean and the standard deviation for each frequency distribution. 
+
+```{r}
+
+sectA = c(6, 14, 18, 25, 19, 11, 5, 2, 3)
+sectB = c(0, 3, 8, 18, 30, 19, 15, 5, 2)
+
+(meanSectA = mean(sectA))
+(sdSectA = sd(sectA))
+
+(meanSectB = mean(sectB))
+(sdSectB = sd(sectB))
+
+```
+(b) Do the data indicate a signiﬁcant diﬀerence in the mean number of children born to women in the two sects? 
+
+```{r}
+
+# H0 : mu1 = mu2
+# HA : mu1 != mu2
+
+n1 = 100
+n2 = 100
+sd1 = sdSectA
+sd2 = sdSectB
+Xbar = meanSectA
+Ybar = meanSectB
+
+(c1 = qnorm(1, 0, 1))
+
+(c2 = qnorm(0, 0, 1))
+
+(z = (Xbar - Ybar) / sqrt((s1^2/n1) + (s2^2/n2)))
+
+if (z > c2 && z < c1) {
+  message("Z is not in rejection region, therefore null hypothesis stays.")
+} else {
+  message("Z is in rejection region, therefore null hypothesis is rejected.")
+}
+
+```
+
+
+(c) Construct a 98% conﬁdence interval for the diﬀerence between the population means. 
+
+```{r}
+
+(c = qnorm(1 -.02/2, 0, 1))
+
+(Lval = (Xbar - Ybar) - c * sqrt((s1^2/n1) + (s2^2/n2)))
+
+(Uval = (Xbar - Ybar) + c * sqrt((s1^2/n1) + (s2^2/n2)))
+
+```
+
+
+
+## Including Q6
+
+6. Measurements of the left-hand and right-hand gripping strengths of 10 left-handed writers are recorded: Person 1 2 3 4 5 6 7 8 9 10 Left hand 140 90 125 130 95 121 85 97 131 110 Right hand 138 87 110 132 96 120 86 90 129 100 
+
+(a) Do the data provide strong evidence that people who write with the left hand have a greater gripping strength in the left hand than they do in the right hand? (α = 0.05)
+
+```{r}
+
+```
+
+
+(b) Construct a 90% conﬁdence interval for the mean diﬀerence.
+
+```{r}
+LH = c(140, 90, 125, 130, 95, 121, 85, 97, 131, 110)
+RH = c(138, 87, 110, 132, 96, 120, 86, 90, 129, 100)
+
+meanLH = mean(LH)
+meanRH = mean(RH)
+
+n1 = 10
+n2 = 10
+
+c = qt(1-0.1/2, n1 + n2 - 2)
+
+sdLH = sd(LH)
+sdRH = sd(RH)
+
+Spooled = sqrt(((n1-1) * (sdLH^2) + (n2-1) * (sdRH^2)) / (n1 + n2 - 2))
+
+(U = (xbar - ybar) + c * (Spooled * sqrt((1/n1) + (1/n2))))
+(L = (xbar - ybar) - c * (Spooled * sqrt((1/n1) + (1/n2))))
+
+```
+

@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1557274965317.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2CE017F4",
+    "lastKnownWriteTime" : 1557277644,
+    "last_content_update" : 1557277644131,
+    "path" : "~/STATS707Regression/RegressionLab.Rmd",
+    "project_path" : "RegressionLab.Rmd",
+    "properties" : {
+        "cursorPosition" : "68,6",
+        "last_setup_crc32" : "8C90E0C5bb338d19",
+        "scrollLine" : "44",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

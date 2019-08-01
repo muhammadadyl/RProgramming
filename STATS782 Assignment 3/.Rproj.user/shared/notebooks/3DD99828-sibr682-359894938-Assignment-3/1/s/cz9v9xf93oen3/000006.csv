@@ -1,0 +1,2 @@
+"0","meanOmega <- dnorm(-0.862, mean = 0, sd = 1)"
+"0","abline(h = 0, col = ""blue"", lwd = 3)"

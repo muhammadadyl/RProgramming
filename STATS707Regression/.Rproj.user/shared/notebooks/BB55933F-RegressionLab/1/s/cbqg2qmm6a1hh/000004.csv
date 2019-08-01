@@ -1,0 +1,1 @@
+"0","plot(Secondary~Primary, data=isotopes, subset=Primary< 10^8)"

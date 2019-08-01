@@ -1,0 +1,78 @@
+---
+title: "RegressionLab"
+author: "Syed Muhammad Adeel Ibrahim"
+date: "May 8, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+```{r}
+
+isotopes <- read.csv("twoIsotopes.csv", header = TRUE)
+mod <- lm (Secondary~Primary, data=isotopes)
+summary(mod)
+
+plot(Secondary~Primary, data=isotopes)
+
+plot(Secondary~Primary, data=isotopes, subset=Primary< 10^8)
+plot(mod)
+
+```
+
+```{r}
+
+modlog <- lm (log(Secondary)~log(Primary), data=isotopes)
+
+summary(modlog)
+
+plot(modlog)
+
+```
+
+```{r}
+
+modsqrt <- lm (sqrt(Secondary)~I(Primary^0.5), data=isotopes)
+
+plot(modsqrt)
+
+```
+
+```{r}
+
+predict(mod)
+
+```
+```{r}
+mod$fitted
+```
+
+```{r}
+predict(mod,interval="confidence")
+```
+
+```{r}
+predict(mod,interval="prediction")
+```
+
+```{r}
+
+2*pt(-384.05896, 412)
+
+```
+
+```{r}
+test <- (.7914 - 1) / .0152
+test
+```
+
+```{r}
+
+2*pt(test, 414 - 2)
+```
+

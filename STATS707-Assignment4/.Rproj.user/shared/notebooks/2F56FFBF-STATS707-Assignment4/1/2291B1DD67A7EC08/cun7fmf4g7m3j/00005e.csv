@@ -1,0 +1,7 @@
+"0","soccerWithCamps <- soccer[!is.na(soccer$Champions),]"
+"0","champions.lm <- lm(WorldCup~EPL*Champions, data=soccerWithCamps)"
+"0"," "
+"0","plot(champions.lm, data=soccerWithCamps)"
+"2","Error in if (datax) plot(y, x, main = main, xlab = ylab, ylab = xlab,  : 
+  argument is not interpretable as logical
+"

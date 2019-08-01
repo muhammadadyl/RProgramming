@@ -1,0 +1,5 @@
+"0","# Ploygon filling of area below -0.862"
+"0","m <- length(xplot)                         "
+"0","x.poly <- c(xplot, xplot[m], xplot[1])        # Adjoin two x-coordinates"
+"0","y.poly <- c(yplot, 0, 0)                      # .. and the corresponding y-coordinates"
+"0","polygon(x.poly, y.poly, col=rgb(0, 1, 0, .3), border=NA)"

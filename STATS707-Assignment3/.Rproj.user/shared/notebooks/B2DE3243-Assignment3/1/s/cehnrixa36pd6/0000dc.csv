@@ -1,0 +1,6 @@
+"0","# Ho : beta0 = 0  "
+"0","# Ha : beta0 != 0"
+"0","# Ho : beta1 = 16.7 "
+"0","# Ha : beta1 != 16.7"
+"0","hypotesisData <- data.frame(TotalSugar = c(0, 1), Energy = c(0, 16.7))"
+"0","abline(lm(TotalSugar~Energy, data = hypotesisData))"

@@ -1,0 +1,1 @@
+"0","boxplot(TotalSugar~Flavour,data=juiceDrinks,main=""Total Sugar data"",xlab=""Flavour"",ylab=""Total Sugar"")"
